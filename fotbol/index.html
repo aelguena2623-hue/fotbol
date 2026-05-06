@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Football Zone</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230a0a0a' stroke='%2300c853' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='18' fill='white'/%3E%3Cpolygon points='32,14 36,26 48,26 38,34 42,46 32,38 22,46 26,34 16,26 28,26' fill='%230a0a0a'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230a0a0a' stroke='%2300c853' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='18' fill='white'/%3E%3Cpolygon points='32,14 36,26 48,26 38,34 42,46 32,38 22,46 26,34 16,26 28,26' fill='%230a0a0a'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#00c853">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #00c853;
+      --green-dark: #007a33;
+      --green-light: #69f0ae;
+      --black: #0a0a0a;
+      --dark: #111;
+      --card: #161616;
+      --white: #f5f5f5;
+      --gold: #ffd600;
+      --red: #ff1744;
+      --gray: #444;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--green-dark); border-radius: 3px; }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--green-dark);
+      padding: 0 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 70px;
+    }
+
+    .logo {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.8rem; font-weight: 700;
+      color: var(--green); letter-spacing: 2px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo span { font-size: 2rem; }
+
+    .nav-links { display: flex; gap: 30px; list-style: none; }
+    .nav-links a {
+      color: var(--white); text-decoration: none;
+      font-weight: 600; font-size: 0.95rem;
+      padding: 6px 0;
+      border-bottom: 2px solid transparent;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .nav-links a:hover { color: var(--green); border-bottom-color: var(--green); }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(0,200,83,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(0,200,83,0.07) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1' fill='%23ffffff08'/%3E%3C/svg%3E"),
+        var(--black);
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 100px 20px 40px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 8px;
+      background: repeating-linear-gradient(90deg, var(--green-dark) 0px, var(--green-dark) 60px, var(--green) 60px, var(--green) 120px);
+    }
+
+    .hero-ball {
+      font-size: 8rem;
+      animation: float 3s ease-in-out infinite;
+      display: block; margin: 0 auto 20px;
+      filter: drop-shadow(0 0 40px rgba(0,200,83,0.4));
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(10deg); }
+    }
+
+    .hero h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 700; line-height: 1;
+      text-transform: uppercase; letter-spacing: 4px;
+    }
+    .hero h1 .accent { color: var(--green); }
+
+    .hero p {
+      font-size: 1.2rem; color: #aaa;
+      max-width: 500px; margin: 20px auto 40px; line-height: 1.8;
+    }
+
+    .hero-btns { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+
+    .btn {
+      padding: 14px 36px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      border: none; cursor: pointer; border-radius: 4px;
+      text-decoration: none; transition: all 0.3s; display: inline-block;
+    }
+    .btn-primary { background: var(--green); color: var(--black); }
+    .btn-primary:hover { background: var(--green-light); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,200,83,0.3); }
+    .btn-secondary { background: transparent; color: var(--green); border: 2px solid var(--green); }
+    .btn-secondary:hover { background: var(--green); color: var(--black); transform: translateY(-3px); }
+
+    /* ===== SECTIONS ===== */
+    section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+
+    .section-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2.2rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;
+    }
+    .section-title span { color: var(--green); }
+    .section-line {
+      width: 60px; height: 4px;
+      background: linear-gradient(90deg, var(--green), transparent);
+      margin-bottom: 40px;
+    }
+
+    /* ===== SCORES ===== */
+    .scores-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .match-card {
+      background: var(--card); border: 1px solid #222;
+      border-radius: 12px; padding: 24px;
+      position: relative; overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s; cursor: pointer;
+    }
+    .match-card:hover { transform: translateY(-5px); border-color: var(--green-dark); }
+    .match-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--green), var(--green-dark));
+    }
+
+    .match-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; font-weight: 700;
+      padding: 4px 10px; border-radius: 20px; margin-bottom: 16px;
+    }
+    .live { background: rgba(255,23,68,0.15); color: var(--red); border: 1px solid var(--red); }
+    .live::before { content: ''; width: 8px; height: 8px; background: var(--red); border-radius: 50%; animation: pulse 1s infinite; }
+    .finished { background: rgba(68,68,68,0.4); color: #888; border: 1px solid #333; }
+    .upcoming { background: rgba(0,200,83,0.1); color: var(--green); border: 1px solid var(--green-dark); }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .match-teams { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .team { text-align: center; flex: 1; }
+    .team-flag { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+    .team-name { font-weight: 700; font-size: 0.9rem; }
+
+    .score-box {
+      background: #1a1a1a; border-radius: 10px;
+      padding: 10px 20px; text-align: center; border: 1px solid #2a2a2a;
+    }
+    .score { font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 700; color: var(--white); }
+    .score-time { font-size: 0.7rem; color: #666; margin-top: 2px; }
+    .match-league { font-size: 0.75rem; color: #555; margin-top: 14px; text-align: center; }
+
+    /* ===== TABLE ===== */
+    .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid #222; }
+
+    table { width: 100%; border-collapse: collapse; background: var(--card); }
+    thead tr { background: #1a1a1a; border-bottom: 2px solid var(--green-dark); }
+    th {
+      padding: 14px 16px; font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px; color: var(--green); text-align: center;
+    }
+    th:first-child { text-align: left; }
+    td { padding: 14px 16px; text-align: center; font-size: 0.9rem; border-bottom: 1px solid #1a1a1a; transition: background 0.2s; }
+    td:first-child { text-align: left; }
+    tr:hover td { background: rgba(0,200,83,0.04); }
+    .rank { font-weight: 700; color: #555; width: 40px; }
+    .rank.top3 { color: var(--gold); }
+    .team-row { display: flex; align-items: center; gap: 10px; }
+    .team-emoji { font-size: 1.3rem; }
+    .pts { font-weight: 900; color: var(--green); font-family: 'Oswald', sans-serif; font-size: 1.1rem; }
+    .form-badge {
+      display: inline-block; width: 20px; height: 20px; border-radius: 4px;
+      font-size: 0.65rem; font-weight: 700; line-height: 20px; text-align: center;
+    }
+    .w { background: var(--green-dark); color: var(--green-light); }
+    .d { background: #333; color: #aaa; }
+    .l { background: rgba(255,23,68,0.2); color: var(--red); }
+
+    /* ===== SCORERS ===== */
+    .scorers-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .scorer-card {
+      background: var(--card); border: 1px solid #222; border-radius: 10px;
+      padding: 16px 20px; display: flex; align-items: center; gap: 16px;
+      transition: all 0.3s;
+    }
+    .scorer-card:hover { border-color: var(--green-dark); transform: translateX(5px); }
+
+    .scorer-rank { font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 700; color: #333; min-width: 36px; }
+    .scorer-rank.gold { color: var(--gold); }
+    .scorer-rank.silver { color: #c0c0c0; }
+    .scorer-rank.bronze { color: #cd7f32; }
+
+    .scorer-info { flex: 1; }
+    .scorer-name { font-weight: 700; font-size: 1rem; }
+    .scorer-team { font-size: 0.8rem; color: #666; }
+
+    .goals-bar-wrap { display: flex; align-items: center; gap: 12px; min-width: 160px; }
+    .goals-bar { height: 6px; background: #222; border-radius: 3px; flex: 1; overflow: hidden; }
+    .goals-fill {
+      height: 100%; background: linear-gradient(90deg, var(--green-dark), var(--green));
+      border-radius: 3px; animation: fillBar 1.5s ease forwards; width: 0;
+    }
+    @keyframes fillBar { to { width: var(--w); } }
+    .goals-count { font-family: 'Oswald', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--green); min-width: 40px; }
+
+    /* ===== NEWS ===== */
+    .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+
+    .news-card {
+      background: var(--card); border: 1px solid #222; border-radius: 12px;
+      overflow: hidden; transition: transform 0.3s, border-color 0.3s; cursor: pointer;
+    }
+    .news-card:hover { transform: translateY(-5px); border-color: var(--green-dark); }
+
+    .news-thumb {
+      height: 160px; display: flex; align-items: center; justify-content: center;
+      font-size: 4rem; position: relative; overflow: hidden;
+    }
+    .news-thumb::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7));
+    }
+    .news-body { padding: 18px; }
+    .news-tag {
+      display: inline-block; background: rgba(0,200,83,0.1); color: var(--green);
+      border: 1px solid var(--green-dark); padding: 2px 10px; border-radius: 20px;
+      font-size: 0.7rem; font-weight: 700; margin-bottom: 10px;
+    }
+    .news-title { font-weight: 700; font-size: 1rem; line-height: 1.5; margin-bottom: 8px; }
+    .news-date { font-size: 0.75rem; color: #555; }
+
+    /* ===== TABS ===== */
+    .tabs { display: flex; gap: 4px; margin-bottom: 30px; flex-wrap: wrap; }
+    .tab {
+      padding: 10px 22px; background: #1a1a1a; border: 1px solid #2a2a2a;
+      color: #666; cursor: pointer; border-radius: 6px;
+      font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; transition: all 0.3s;
+    }
+    .tab.active { background: var(--green); color: var(--black); border-color: var(--green); }
+    .tab:hover:not(.active) { border-color: var(--green-dark); color: var(--white); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== TICKER ===== */
+    .ticker { background: var(--green); color: var(--black); padding: 10px 0; overflow: hidden; }
+    .ticker-inner { display: flex; gap: 60px; animation: ticker 30s linear infinite; white-space: nowrap; width: max-content; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .ticker-item { font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+
+    /* ===== FOOTER ===== */
+    footer { background: var(--card); border-top: 2px solid var(--green-dark); padding: 40px; text-align: center; }
+    footer .footer-logo { font-family: 'Oswald', sans-serif; font-size: 2rem; color: var(--green); margin-bottom: 10px; }
+    footer p { color: #444; font-size: 0.85rem; }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      section { padding: 60px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="logo"><span>⚽</span> Football Zone</div>
+  <ul class="nav-links">
+    <li><a href="#scores">Scores</a></li>
+    <li><a href="#standings">Standings</a></li>
+    <li><a href="#scorers">Top Scorers</a></li>
+    <li><a href="#news">News</a></li>
+  </ul>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker" style="margin-top:70px;">
+  <div class="ticker-inner">
+    <span class="ticker-item">🔴 LIVE: Real Madrid 2 - 1 Barcelona — 67'</span>
+    <span class="ticker-item">⚽ GOAL: Mbappé — 34' — Real Madrid</span>
+    <span class="ticker-item">🟡 YELLOW CARD: De Jong — 55' — Barcelona</span>
+    <span class="ticker-item">🔴 LIVE: Liverpool 1 - 0 Man City — 82'</span>
+    <span class="ticker-item">⚽ GOAL: Salah — 78' — Liverpool</span>
+    <span class="ticker-item">📅 TOMORROW: PSG vs Bayern Munich — 21:00</span>
+    <span class="ticker-item">🔴 LIVE: Real Madrid 2 - 1 Barcelona — 67'</span>
+    <span class="ticker-item">⚽ GOAL: Mbappé — 34' — Real Madrid</span>
+    <span class="ticker-item">🟡 YELLOW CARD: De Jong — 55' — Barcelona</span>
+    <span class="ticker-item">🔴 LIVE: Liverpool 1 - 0 Man City — 82'</span>
+    <span class="ticker-item">⚽ GOAL: Salah — 78' — Liverpool</span>
+    <span class="ticker-item">📅 TOMORROW: PSG vs Bayern Munich — 21:00</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <span class="hero-ball">⚽</span>
+    <h1>The <span class="accent">Football</span><br>Universe</h1>
+    <p>Goals, scores, standings and news — all in one place, live and non-stop.</p>
+    <div class="hero-btns">
+      <a href="#scores" class="btn btn-primary">Live Scores</a>
+      <a href="#standings" class="btn btn-secondary">Standings</a>
+    </div>
+  </div>
+</div>
+
+<!-- SCORES -->
+<section id="scores">
+  <div class="section-title">Live <span>Scores</span></div>
+  <div class="section-line"></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('tab-live', this)">🔴 Live</button>
+    <button class="tab" onclick="switchTab('tab-today', this)">📅 Today</button>
+    <button class="tab" onclick="switchTab('tab-tomorrow', this)">⏳ Tomorrow</button>
+  </div>
+
+  <div id="tab-live" class="tab-content active">
+    <div class="scores-grid" id="live-matches"></div>
+  </div>
+  <div id="tab-today" class="tab-content">
+    <div class="scores-grid" id="today-matches"></div>
+  </div>
+  <div id="tab-tomorrow" class="tab-content">
+    <div class="scores-grid" id="tomorrow-matches"></div>
+  </div>
+</section>
+
+<!-- STANDINGS -->
+<section id="standings" style="background: rgba(0,200,83,0.02); max-width:100%; padding:80px 40px;">
+<div style="max-width:1200px;margin:0 auto;">
+  <div class="section-title">League <span>Standings</span></div>
+  <div class="section-line"></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchLeague('laliga', this)">🇪🇸 La Liga</button>
+    <button class="tab" onclick="switchLeague('premier', this)">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</button>
+    <button class="tab" onclick="switchLeague('champions', this)">🏆 Champions League</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align:left">#</th>
+          <th style="text-align:left">Club</th>
+          <th>P</th><th>W</th><th>D</th><th>L</th>
+          <th>GD</th><th>Pts</th><th>Form</th>
+        </tr>
+      </thead>
+      <tbody id="standings-body"></tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- TOP SCORERS -->
+<section id="scorers">
+  <div class="section-title">Top <span>Scorers</span></div>
+  <div class="section-line"></div>
+  <div class="scorers-list" id="scorers-list"></div>
+</section>
+
+<!-- NEWS -->
+<section id="news" style="background: rgba(0,200,83,0.02); max-width:100%; padding:80px 40px;">
+<div style="max-width:1200px;margin:0 auto;">
+  <div class="section-title">Latest <span>News</span></div>
+  <div class="section-line"></div>
+  <div class="news-grid" id="news-grid"></div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">⚽ Football Zone</div>
+  <p>All scores and news — follow live</p>
+  <p style="margin-top:8px;font-size:0.75rem;">© 2025 Football Zone</p>
+</footer>
+
+<script>
+  const liveMatches = [
+    { home:'Real Madrid', homeFlag:'🤍', away:'Barcelona', awayFlag:'🔵🔴', score:'2 - 1', time:"67'", status:'live', league:'La Liga — Matchday 30' },
+    { home:'Liverpool', homeFlag:'🔴', away:'Man City', awayFlag:'🔵', score:'1 - 0', time:"82'", status:'live', league:'Premier League — Matchday 32' },
+    { home:'Juventus', homeFlag:'⚫⚪', away:'AC Milan', awayFlag:'🔴⚫', score:'0 - 0', time:"45+2'", status:'live', league:'Serie A — Matchday 28' },
+  ];
+
+  const todayMatches = [
+    { home:'Atlético Madrid', homeFlag:'🔴⚪', away:'Sevilla', awayFlag:'⚪🔴', score:'2 - 2', time:'FT', status:'finished', league:'La Liga' },
+    { home:'PSG', homeFlag:'🔵🔴', away:'Marseille', awayFlag:'🔵⚪', score:'3 - 1', time:'FT', status:'finished', league:'Ligue 1' },
+    { home:'Dortmund', homeFlag:'🟡⚫', away:'Bayern', awayFlag:'🔴⚪', score:'1 - 2', time:'FT', status:'finished', league:'Bundesliga' },
+    { home:'Arsenal', homeFlag:'🔴⚪', away:'Tottenham', awayFlag:'⚪🔵', score:'0 - 1', time:'FT', status:'finished', league:'Premier League' },
+  ];
+
+  const tomorrowMatches = [
+    { home:'Man United', homeFlag:'🔴', away:'Chelsea', awayFlag:'🔵', score:'21:00', time:'', status:'upcoming', league:'Premier League' },
+    { home:'Real Madrid', homeFlag:'🤍', away:'Bayern Munich', awayFlag:'🔴⚪', score:'21:00', time:'', status:'upcoming', league:'Champions League' },
+    { home:'Inter Milan', homeFlag:'🔵⚫', away:'PSG', awayFlag:'🔵🔴', score:'20:45', time:'', status:'upcoming', league:'Champions League' },
+  ];
+
+  const standings = {
+    laliga: [
+      { name:'Real Madrid', flag:'🤍', p:29, w:21, d:5, l:3, gd:'+38', pts:68, form:['w','w','d','w','w'] },
+      { name:'Barcelona', flag:'🔵🔴', p:29, w:20, d:4, l:5, gd:'+29', pts:64, form:['l','w','w','w','d'] },
+      { name:'Atlético Madrid', flag:'🔴⚪', p:29, w:17, d:6, l:6, gd:'+18', pts:57, form:['w','d','w','l','w'] },
+      { name:'Sevilla', flag:'⚪🔴', p:29, w:12, d:8, l:9, gd:'+3', pts:44, form:['d','l','w','d','w'] },
+      { name:'Valencia', flag:'🟡⚫', p:29, w:10, d:7, l:12, gd:'-8', pts:37, form:['l','d','l','w','d'] },
+    ],
+    premier: [
+      { name:'Manchester City', flag:'🔵', p:31, w:22, d:5, l:4, gd:'+41', pts:71, form:['w','w','w','d','w'] },
+      { name:'Arsenal', flag:'🔴⚪', p:31, w:21, d:4, l:6, gd:'+35', pts:67, form:['w','w','l','w','w'] },
+      { name:'Liverpool', flag:'🔴', p:31, w:20, d:6, l:5, gd:'+32', pts:66, form:['w','d','w','w','w'] },
+      { name:'Tottenham', flag:'⚪🔵', p:31, w:16, d:5, l:10, gd:'+12', pts:53, form:['w','l','d','w','l'] },
+      { name:'Chelsea', flag:'🔵⚪', p:31, w:14, d:7, l:10, gd:'+8', pts:49, form:['d','w','l','d','w'] },
+    ],
+    champions: [
+      { name:'Real Madrid', flag:'🤍', p:8, w:6, d:1, l:1, gd:'+14', pts:19, form:['w','w','d','w','w'] },
+      { name:'Manchester City', flag:'🔵', p:8, w:6, d:0, l:2, gd:'+11', pts:18, form:['w','l','w','w','w'] },
+      { name:'PSG', flag:'🔵🔴', p:8, w:5, d:2, l:1, gd:'+9', pts:17, form:['w','d','w','d','w'] },
+      { name:'Bayern Munich', flag:'🔴⚪', p:8, w:5, d:1, l:2, gd:'+7', pts:16, form:['w','l','w','w','d'] },
+      { name:'Inter Milan', flag:'🔵⚫', p:8, w:4, d:2, l:2, gd:'+3', pts:14, form:['d','w','l','w','d'] },
+    ]
+  };
+
+  const scorers = [
+    { name:'Kylian Mbappé', team:'Real Madrid 🤍', goals:28, emoji:'⚡' },
+    { name:'Erling Haaland', team:'Manchester City 🔵', goals:26, emoji:'💪' },
+    { name:'Robert Lewandowski', team:'Barcelona 🔵🔴', goals:23, emoji:'🎯' },
+    { name:'Mohamed Salah', team:'Liverpool 🔴', goals:21, emoji:'⚽' },
+    { name:'Vinícius Jr.', team:'Real Madrid 🤍', goals:19, emoji:'🔥' },
+    { name:'Lamine Yamal', team:'Barcelona 🔵🔴', goals:17, emoji:'⭐' },
+    { name:'Ousmane Dembélé', team:'PSG 🔵🔴', goals:15, emoji:'🚀' },
+  ];
+
+  const news = [
+    { emoji:'⚽', bg:'linear-gradient(135deg,#007a33,#004d20)', tag:'Goals', title:"Mbappé hat-trick fires Real Madrid to historic El Clásico victory", date:'2 hours ago' },
+    { emoji:'🏆', bg:'linear-gradient(135deg,#c8a800,#8b7500)', tag:'Champions League', title:'Barcelona reveal squad list for PSG semi-final showdown', date:'3 hours ago' },
+    { emoji:'💰', bg:'linear-gradient(135deg,#c62828,#7b0000)', tag:'Transfers', title:'Haaland rejects mega Saudi offer and commits future to City', date:'5 hours ago' },
+    { emoji:'🤕', bg:'linear-gradient(135deg,#1565c0,#0a3d7a)', tag:'Injuries', title:'Good news: Vinícius returns to training ahead of UCL final', date:'Yesterday' },
+    { emoji:'📊', bg:'linear-gradient(135deg,#4a148c,#1a0050)', tag:'Stats', title:"Mbappé scores his 200th European goal to enter football history", date:'Yesterday' },
+    { emoji:'🌍', bg:'linear-gradient(135deg,#006064,#002a2d)', tag:'International', title:'Morocco advance to Nations Cup semi-finals with impressive win', date:'2 days ago' },
+  ];
+
+  // ===== RENDER =====
+  function createMatchCard(m) {
+    const statusLabel = m.status === 'live'
+      ? `<span class="match-status live">LIVE ${m.time}</span>`
+      : m.status === 'finished'
+      ? `<span class="match-status finished">Full Time</span>`
+      : `<span class="match-status upcoming">Upcoming</span>`;
+    return `
+      <div class="match-card">
+        ${statusLabel}
+        <div class="match-teams">
+          <div class="team">
+            <span class="team-flag">${m.homeFlag}</span>
+            <div class="team-name">${m.home}</div>
+          </div>
+          <div class="score-box">
+            <div class="score">${m.score}</div>
+            ${m.time && m.status === 'live' ? `<div class="score-time">${m.time}</div>` : ''}
+          </div>
+          <div class="team">
+            <span class="team-flag">${m.awayFlag}</span>
+            <div class="team-name">${m.away}</div>
+          </div>
+        </div>
+        <div class="match-league">🏟 ${m.league}</div>
+      </div>`;
+  }
+
+  function renderMatches(id, matches) {
+    document.getElementById(id).innerHTML = matches.map(createMatchCard).join('');
+  }
+
+  function renderStandings(league) {
+    const data = standings[league];
+    document.getElementById('standings-body').innerHTML = data.map((t, i) => {
+      const rankClass = i < 3 ? 'rank top3' : 'rank';
+      const formHtml = t.form.map(f => `<span class="form-badge ${f}">${f.toUpperCase()}</span>`).join(' ');
+      return `<tr>
+        <td><span class="${rankClass}">${i+1}</span></td>
+        <td><div class="team-row"><span class="team-emoji">${t.flag}</span>${t.name}</div></td>
+        <td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td>
+        <td>${t.gd}</td><td class="pts">${t.pts}</td>
+        <td>${formHtml}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderScorers() {
+    const max = scorers[0].goals;
+    document.getElementById('scorers-list').innerHTML = scorers.map((s, i) => {
+      const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+      const pct = Math.round((s.goals / max) * 100);
+      return `
+        <div class="scorer-card">
+          <div class="scorer-rank ${rankClass}">${i+1}</div>
+          <div style="font-size:1.8rem">${s.emoji}</div>
+          <div class="scorer-info">
+            <div class="scorer-name">${s.name}</div>
+            <div class="scorer-team">${s.team}</div>
+          </div>
+          <div class="goals-bar-wrap">
+            <div class="goals-bar"><div class="goals-fill" style="--w:${pct}%"></div></div>
+            <div class="goals-count">${s.goals} ⚽</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderNews() {
+    document.getElementById('news-grid').innerHTML = news.map(n => `
+      <div class="news-card">
+        <div class="news-thumb" style="background:${n.bg}">${n.emoji}</div>
+        <div class="news-body">
+          <span class="news-tag">${n.tag}</span>
+          <div class="news-title">${n.title}</div>
+          <div class="news-date">🕐 ${n.date}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function switchLeague(league, btn) {
+    document.querySelectorAll('#standings .tabs .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    renderStandings(league);
+  }
+
+  function updateLiveTimes() {
+    liveMatches.forEach(m => {
+      if (m.status === 'live') {
+        const curr = parseInt(m.time);
+        if (!isNaN(curr) && curr < 90) m.time = (curr + 1) + "'";
+      }
+    });
+    renderMatches('live-matches', liveMatches);
+  }
+
+  // INIT
+  renderMatches('live-matches', liveMatches);
+  renderMatches('today-matches', todayMatches);
+  renderMatches('tomorrow-matches', tomorrowMatches);
+  renderStandings('laliga');
+  renderScorers();
+  renderNews();
+  setInterval(updateLiveTimes, 60000);
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
